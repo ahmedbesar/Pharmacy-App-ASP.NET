@@ -15,6 +15,7 @@ namespace Pharmacy.Domian.Entities
         public string ImageUrl { get; set; }
         public ProductType ProductType { get; set; }
         public int ProductTypeId { get; set; }
+        public List<WishList> WishLists { get; set; }
 
 
     }
