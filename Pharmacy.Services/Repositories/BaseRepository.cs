@@ -209,12 +209,12 @@ namespace Pharmacy.Services.Repositories
             return await _context.Set<T>().CountAsync(criteria);
         }
 
-       /* public WishList Create_(WishList WishList)
+        public WishList Create_(WishList WishList)
         {
            var newWishlist=  _context.WishLists.Add(WishList);
 
             return WishList;
-        }*/
+        }
      
         public List<WishList> GetUserWishList(string userId, int pgnum, int pgsize)
         {
@@ -230,6 +230,11 @@ namespace Pharmacy.Services.Repositories
         public WishList GetWishListById(int id)
         {
             return _context.WishLists.FirstOrDefault(w => w.Id == id);
+        }
+
+        public void Remove_ (WishList WishList)
+        {
+             _context.WishLists.Remove(WishList);
         }
     }
 }

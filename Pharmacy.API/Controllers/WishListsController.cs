@@ -30,8 +30,10 @@ namespace Pharmacy.API.Controllers
 
 
         [HttpGet("GetUserWishList")]
-        public IActionResult GetUserWishList(string userId, int pgnum, int? pgsize = 30)
+        public IActionResult GetUserWishList( int pgnum, int? pgsize = 30)
         {
+             string userId = _userManager.GetUserId(HttpContext.User);
+
             if (pgnum == 0)
                 return BadRequest("Page number is required");
 
@@ -41,11 +43,10 @@ namespace Pharmacy.API.Controllers
         }
 
 
-/*
-      [HttpPost("AddWishList")]
-      public  IActionResult CreateWishListAsync(int productId )
+        [HttpPost("AddToWishList")]
+        public  IActionResult CreateWishListAsync(int productId )
       {
-          string userId = _userManager.GetUserId(HttpContext.User);
+         string userId = _userManager.GetUserId(HttpContext.User);
           if (productId == 0)
               return BadRequest("productId is required!");
           if (userId == null)
@@ -58,17 +59,27 @@ namespace Pharmacy.API.Controllers
 
           };
 
-           _unitOfWork.WishLists.Create_(WishList);
+          _unitOfWork.WishLists.Create_(WishList);
           _unitOfWork.Complete();
 
           return Ok(WishList);
       }
 
+        [HttpDelete]
+        public IActionResult Remove(int id)
+        {
+            if (id == 0)
+                return BadRequest("Id field is required");
+            var wishList=_unitOfWork.WishLists.GetWishListById(id);
+            _unitOfWork.WishLists.Remove_(wishList);
+            _unitOfWork.Complete();
+            return Ok(wishList);
+        }
 
 
-     
 
-*/
+
+
 
     }
 }

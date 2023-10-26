@@ -6,9 +6,18 @@ using System.Threading.Tasks;
 
 namespace Pharmacy.Domian.Entities
 {
-    public class Basket : BaseEntity
+    public class Basket 
     {
-        public string Addresses { get; set; }
+        public Basket()
+        {
+        }
+
+        public Basket(string id)
+        {
+            Id = id;
+        }
+
+        public string Id { get; set; }
         public List<BasketItem> Items { get; set; }
     }
 }

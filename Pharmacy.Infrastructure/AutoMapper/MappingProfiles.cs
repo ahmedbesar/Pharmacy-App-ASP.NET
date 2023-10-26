@@ -21,8 +21,8 @@ namespace Pharmacy.Infrastructure.AutoMapper
             CreateMap<ProductType, ProductTypeDto>()
                 .ForMember(x => x.ImageUrl, y => y.MapFrom<ProductTypeUrlResolver>());
 
-            CreateMap<WishList, WishListDto>()
-                  ;
+            CreateMap<WishList, WishListDto>();
+        
         }
     }
 }

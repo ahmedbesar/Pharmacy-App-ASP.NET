@@ -13,7 +13,7 @@ namespace Pharmacy.Domian
         IBaseRepository<Product> Products { get; }
         IBaseRepository<ProductType> ProductTypes { get; }
         IBaseRepository<WishList> WishLists { get; }
-
+        
         int Complete();
     }
 }

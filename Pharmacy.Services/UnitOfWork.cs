@@ -27,7 +27,7 @@ namespace Pharmacy.Services
             Products = new BaseRepository<Product>(_context);
             ProductTypes = new BaseRepository<ProductType>(_context);
             WishLists = new BaseRepository<WishList>(_context);
-
+            
         }
 
         public int Complete()

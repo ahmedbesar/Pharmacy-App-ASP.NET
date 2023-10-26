@@ -19,12 +19,12 @@ namespace Pharmacy.Services
         public DbSet<Product> Product { get; set; }
         public DbSet<ProductType> ProductType { get; set; }
         public DbSet<WishList> WishLists { get; set; }
+       
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            
         }
 
 

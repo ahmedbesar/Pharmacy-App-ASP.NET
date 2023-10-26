@@ -33,11 +33,14 @@ namespace Pharmacy.Domian.Interfaces
        
        // WishList Create_(WishList WishList);
         List<WishList>GetUserWishList(string userId, int pgnum, int pgsize);
-     
+        WishList Create_(WishList WishList);
+        WishList GetWishListById(int id);
+
+        void Remove_(WishList WishList);
 
 
         //product
-            
+
         List<Product> GetAllProductWithSameType(int id, int pgnum, int pgsize);
         List<Product> GetByProductNameOrProductTypeNameWithPagination(string term, int pgnum, int pgsize);
 
