@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Pharmacy.Domian;
 using Pharmacy.Domian.Entities;
+using Pharmacy.Domian.Entities.Identity;
 using Pharmacy.Infrastructure.Consts;
 using Pharmacy.Infrastructure.Dtos;
 using System;

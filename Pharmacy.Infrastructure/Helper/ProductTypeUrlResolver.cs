@@ -22,7 +22,7 @@ namespace Pharmacy.Infrastructure.Helper
         {
             if (!string.IsNullOrEmpty(source.ImageUrl))
             {
-                return _config["ApiUrl"] + source.ImageUrl;
+                return _config["ApiUrl"]+ "uploads/images/ProductType/" + source.ImageUrl;
             }
 
             return null;
