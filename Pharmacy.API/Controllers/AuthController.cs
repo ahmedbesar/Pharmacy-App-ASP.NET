@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,17 +18,29 @@ namespace Pharmacy.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly UserManager<ApplicationUser> _userManager;
-
-        public AuthController(IAuthService authService, UserManager<ApplicationUser> userManager)
+        private readonly IMapper _mapper;
+        public AuthController(IAuthService authService, IMapper mapper)
         {
             _authService = authService;
-            _userManager = userManager;
+            _mapper = mapper;
         }
         private new List<string> _allowedExtenstions = new List<string> { ".jpg", ".png" };
         private long _maxAllowedPosterSize = 1048576;
 
-      
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet("currentUser")]
+        public async Task<ActionResult<UserDto>>GetCurrentUserInfo()
+        {
+            var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _authService.GetCurrentUserById(userName);
+            if (user == null)
+              return NotFound();
+
+            var currentUser= _mapper.Map<UserDto>(user);
+
+            return Ok(currentUser);
+        }
+
 
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync([FromForm] RegisterDto model)
@@ -103,7 +116,7 @@ namespace Pharmacy.API.Controllers
 
             return Ok();
         }
-        [HttpPost("UpdateUser")]
+        [HttpPost("updateUser")]
         public async Task<IActionResult> UpdateUser([FromForm] UpdateUserDto dto)
         {
             if (dto.Number == null)

@@ -267,9 +267,6 @@ namespace Pharmacy.Services.Repositories
             if (!refreshToken.IsActive)
                 return false;
 
-
-
-
             user.UserName = dto.Username;
             user.Email = dto.Email;
             user.PhoneNumber = dto.Number;
@@ -280,16 +277,19 @@ namespace Pharmacy.Services.Repositories
                 await dto.ProfileImage.CopyToAsync(dataStream);
                 user.ProfileImage = await UploadImages.UploadImage(dto.ProfileImage, "users");
             }
-               
-
-
-
+        
             await _userManager.UpdateAsync(user);
 
             return true;
         }
 
-        private RefreshToken GenerateRefreshToken()
+        public async Task<ApplicationUser> GetCurrentUserById(string userName)
+        {
+            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.UserName== userName);
+            return user;
+        }
+
+            private RefreshToken GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
 
