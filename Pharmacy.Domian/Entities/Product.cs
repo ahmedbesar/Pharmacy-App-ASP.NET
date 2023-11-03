@@ -22,6 +22,7 @@ namespace Pharmacy.Domian.Entities
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public ProductType ProductType { get; set; }
         public int ProductTypeId { get; set; }
+        public List<WishList> WishLists { get; set; }
 
 
 
