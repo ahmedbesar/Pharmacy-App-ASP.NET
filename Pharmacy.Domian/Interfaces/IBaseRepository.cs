@@ -35,7 +35,7 @@ namespace Pharmacy.Domian.Interfaces
         List<WishList>GetUserWishList(string userId, int pgnum, int pgsize);
         WishList Create_(WishList WishList);
         WishList GetWishListById(int id);
-
+        Task<WishList> checkProductInUserWishlist(string userId, int productId);
         void Remove_(WishList WishList);
 
 

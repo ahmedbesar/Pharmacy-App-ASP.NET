@@ -94,7 +94,6 @@ namespace Pharmacy.Services.Repositories
             await _userManager.AddToRoleAsync(user, "User");
 
             var jwtSecurityToken = await CreateJwtToken(user);
-
             var refreshToken = GenerateRefreshToken();
             user.RefreshTokens?.Add(refreshToken);
             await _userManager.UpdateAsync(user);
@@ -283,13 +282,39 @@ namespace Pharmacy.Services.Repositories
             return true;
         }
 
-        public async Task<ApplicationUser> GetCurrentUserById(string userName)
+        public async Task<ApplicationUser> GetCurrentUserById(string email)
         {
-            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.UserName== userName);
+            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.Email== email);
+            return user;
+        }
+        public async Task<ApplicationUser> CheckUserByEmail(string email)
+        {
+            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.Email == email);
             return user;
         }
 
-            private RefreshToken GenerateRefreshToken()
+        public async Task<bool> UpdateUserVerificationCode( ApplicationUser user,string code)
+        {
+            user.VerificationCode =code;
+            await _userManager.UpdateAsync(user);
+            return true;
+        }
+       
+        public async Task<bool> resetPassword(ApplicationUser user, string password)
+        {
+            user.PasswordHash =  _userManager.PasswordHasher.HashPassword(user, password);
+            await _userManager.UpdateAsync(user);
+            return true;
+        }
+        public async Task<bool> checkVerificationCode(ApplicationUser user, string code)
+        {
+            if (user.VerificationCode == code)  return true; 
+           
+            return false;
+        }
+
+
+        private RefreshToken GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
 

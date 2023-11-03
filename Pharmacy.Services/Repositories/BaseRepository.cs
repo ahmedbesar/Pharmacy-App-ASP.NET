@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Pharmacy.Domian.Entities;
+using Pharmacy.Domian.Entities.Identity;
 using Pharmacy.Domian.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -225,13 +226,16 @@ namespace Pharmacy.Services.Repositories
                 
         }
 
-        
-
         public WishList GetWishListById(int id)
         {
             return _context.WishLists.FirstOrDefault(w => w.Id == id);
         }
-
+        public async Task<WishList> checkProductInUserWishlist(string userId, int productId)
+        {
+            var wishList = await _context.WishLists.FirstOrDefaultAsync(u => u.UserId==userId&& u.ProductId==productId);
+            
+            return wishList;
+        }
         public void Remove_ (WishList WishList)
         {
              _context.WishLists.Remove(WishList);

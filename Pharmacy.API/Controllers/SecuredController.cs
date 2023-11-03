@@ -11,7 +11,7 @@ namespace Pharmacy.API.Controllers
     [Authorize(AuthenticationSchemes = "Bearer")]
     public class SecuredController : ControllerBase
     {
-        /*private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public SecuredController(SignInManager<ApplicationUser> signInManager)
         {
@@ -22,9 +22,9 @@ namespace Pharmacy.API.Controllers
         [HttpGet("secured")]
         public IActionResult GetData()
         {
-         
-           
+
+
             return Ok("Hello from secured controller");
-        }*/
+        }
     }
 }

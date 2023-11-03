@@ -9,7 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using Pharmacy.Domian.Entities.Identity;
 using Pharmacy.Domian.IdentityDtos;
 using Pharmacy.Domian.Interfaces;
+using Pharmacy.Infrastructure.Dtos;
+using System.Data.Entity;
 using System.Security.Claims;
+using System.Text.Json.Serialization;
 
 namespace Pharmacy.API.Controllers
 {
@@ -19,28 +22,120 @@ namespace Pharmacy.API.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
-        public AuthController(IAuthService authService, IMapper mapper)
+        private readonly IMailingService _mailingService;
+        public AuthController(IAuthService authService, IMapper mapper, IMailingService mailingService)
         {
             _authService = authService;
             _mapper = mapper;
+            _mailingService = mailingService;
         }
         private new List<string> _allowedExtenstions = new List<string> { ".jpg", ".png" };
         private long _maxAllowedPosterSize = 1048576;
+
+
+
+        [HttpPost("ForgetPassword")]
+        public async Task<IActionResult> ForgetPassword([FromBody] string email)
+        {
+            var user = await _authService.CheckUserByEmail(email);
+
+            if (user == null)
+            {
+                return BadRequest(" Write a valid Email ");
+            }
+            var code =  new Random().Next(1000, 9999).ToString();
+
+            if (string.IsNullOrEmpty(code) || !(code.Length == 4))
+                return BadRequest(" Code is not valid ");
+
+            await _authService.UpdateUserVerificationCode(user, code);
+
+            await SendMail(new MailRequestDto { ToEmail = user.Email, Subject = "Verification code", Body = code });
+
+            Response.Cookies.Append("ForgotPasswordEmail", user.Email, new CookieOptions
+            {
+                // Set additional options as needed, e.g., expiration, secure, etc.
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
+                // Add more options as needed
+            }) ;
+            return Ok(user.Email);
+        }
+        [HttpPost("resendVereficationCode")]
+        public async Task<IActionResult> resendCode()
+        {
+            string email = Request.Cookies["ForgotPasswordEmail"];
+            var user = await _authService.CheckUserByEmail(email);
+            if (user == null) return BadRequest($"No user was found by email: {email}");
+            var code = new Random().Next(1000, 9999).ToString();
+
+            if (string.IsNullOrEmpty(code) || !(code.Length == 4))
+                return BadRequest(" Code is not valid ");
+            await _authService.UpdateUserVerificationCode(user, code);
+
+            await SendMail(new MailRequestDto { ToEmail = user.Email, Subject = "Verification code", Body = code });
+            return Ok(user.VerificationCode);
+        }
+
+        [NonAction]
+        public async Task<IActionResult> SendMail(MailRequestDto dto)
+        {
+            await _mailingService.SendEmailAsync(dto.ToEmail, dto.Subject, dto.Body, dto.Attachments);
+            return Ok();
+        }
+
+        [HttpPost("Verification")]
+        public async Task<IActionResult> VerificationCode( string code)
+         {
+             string email =  Request.Cookies["ForgotPasswordEmail"];
+             var user = await _authService.CheckUserByEmail(email);
+             if (user == null) return BadRequest($"No user was found by email: {email}");
+       
+             if (string.IsNullOrEmpty(code) )
+                 return BadRequest(" You must send code ");
+             if (!(code.Length == 4))
+                 return BadRequest(" Code must consists of 4 numbers ");
+             var checkedCode = await _authService.checkVerificationCode(user, code);
+             if (!checkedCode)
+                 return BadRequest("Code is wrong");
+       
+             return Ok("Code is Verified");
+         }
+              
+        [HttpPost("reset")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
+         {
+            if (dto.Password == null) return BadRequest("Password field is required");
+
+
+            string email = Request.Cookies["ForgotPasswordEmail"];
+            var user = await _authService.CheckUserByEmail(email);
+
+
+            if (user == null) return BadRequest($"No user was found by email: {email}");
+  
+
+
+            var result = await _authService.resetPassword(user, dto.Password);
+             if (!result)
+                 return BadRequest(" Please write valid password ");
+       
+             return Ok("Your updated your password password successfully.");
+         }
 
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet("currentUser")]
         public async Task<ActionResult<UserDto>>GetCurrentUserInfo()
         {
-            var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = await _authService.GetCurrentUserById(userName);
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var user = await _authService.GetCurrentUserById(email);
             if (user == null)
-              return NotFound();
+              return BadRequest("NO user was found");
 
             var currentUser= _mapper.Map<UserDto>(user);
 
             return Ok(currentUser);
         }
-
 
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync([FromForm] RegisterDto model)

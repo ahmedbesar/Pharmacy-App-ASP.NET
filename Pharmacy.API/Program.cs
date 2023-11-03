@@ -14,14 +14,15 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Pharmacy.Services.Settings;
 using Microsoft.Extensions.Configuration;
+using System.Data.Entity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
-
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-
+builder.Services.AddScoped<IMailingService, MailingService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
@@ -60,7 +61,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.User.RequireUniqueEmail = true;
 }).AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
 
 
 builder.Services.AddControllers();
