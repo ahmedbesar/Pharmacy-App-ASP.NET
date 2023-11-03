@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Pharmacy.Domian.Entities;
 using Pharmacy.Domian.Entities.OrderAggregate;
 using System;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Pharmacy.Infrastructure.Data
 {
-    public class StoreContext : DbContext
+    public class StoreContext : IdentityDbContext<IdentityUser>
     {
         public StoreContext(DbContextOptions<StoreContext> options) : base(options) { }
 
@@ -22,9 +24,15 @@ namespace Pharmacy.Infrastructure.Data
         public DbSet <OrderItem> orderItems { get; set; }
         public DbSet <DeliveryMethod> deliveryMethods { get; set; }
 
+     
+        public DbSet<WishList> WishLists { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Address>().HasNoKey();
+            modelBuilder.Entity<IdentityUserLogin<string>>().HasNoKey();
+            modelBuilder.Entity<IdentityUserRole<string>>().HasNoKey();
+            modelBuilder.Entity<IdentityUserToken<string>>().HasNoKey();
+
 
 
         }

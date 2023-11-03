@@ -1,6 +1,7 @@
 ﻿using Pharmacy.Domian;
 using Pharmacy.Domian.Entities;
 using Pharmacy.Domian.Interfaces;
+using Pharmacy.Infrastructure.Data;
 using Pharmacy.Services.Repositories;
 using System;
 using System.Collections.Generic;
@@ -8,19 +9,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Reflection.Metadata.BlobBuilder;
+using IUnitOfWork = Pharmacy.Domian.IUnitOfWork;
 
 namespace Pharmacy.Services
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly ApplicationDbContext _context;
+        private readonly StoreContext _context;
 
         public IBaseRepository<Product> Products { get; private set; }
         public IBaseRepository<ProductType> ProductTypes { get; private set; }
         public IBaseRepository<WishList> WishLists { get; private set; }
 
 
-        public UnitOfWork(ApplicationDbContext context)
+        public UnitOfWork(StoreContext context)
         {
             _context = context;
 

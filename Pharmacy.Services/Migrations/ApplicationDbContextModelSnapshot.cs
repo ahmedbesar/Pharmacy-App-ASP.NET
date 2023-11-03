@@ -10,7 +10,7 @@ using Pharmacy.Services;
 
 namespace Pharmacy.Services.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(Infrastructure.Data.StoreContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
