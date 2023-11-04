@@ -50,13 +50,18 @@ namespace Pharmacy.Services.Repositories
                         }
                     }
                 }
+                const int timeout = 5000000; // 5 seconds
+
+                // Create a CancellationTokenSource with the specified timeout
+                using var cts = new CancellationTokenSource(timeout);
+                cts.CancelAfter(timeout);
 
                 builder.HtmlBody = body;
                 email.Body = builder.ToMessageBody();
                 email.From.Add(new MailboxAddress(_mailSettings.DisplayName, _mailSettings.Email));
 
                 using var smtp = new SmtpClient();
-                smtp.Connect("smtp.gmail.com", 465, SecureSocketOptions.SslOnConnect);
+                smtp.Connect("smtp.gmail.com", 465, SecureSocketOptions.SslOnConnect,cts.Token);
                 smtp.Authenticate(_mailSettings.Email, _mailSettings.Password);
                 await smtp.SendAsync(email);
 

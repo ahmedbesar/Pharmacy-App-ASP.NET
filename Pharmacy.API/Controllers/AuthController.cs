@@ -49,6 +49,7 @@ namespace Pharmacy.API.Controllers
                 return BadRequest(" Code is not valid ");
 
             await _authService.UpdateUserVerificationCode(user, code);
+            
 
             await SendMail(new MailRequestDto { ToEmail = user.Email, Subject = "Verification code", Body = code });
 
@@ -110,17 +111,27 @@ namespace Pharmacy.API.Controllers
 
             string email = Request.Cookies["ForgotPasswordEmail"];
             var user = await _authService.CheckUserByEmail(email);
-
-
             if (user == null) return BadRequest($"No user was found by email: {email}");
-  
-
-
             var result = await _authService.resetPassword(user, dto.Password);
              if (!result)
                  return BadRequest(" Please write valid password ");
-       
-             return Ok("Your updated your password password successfully.");
+
+            var TokenRequestDto = new TokenRequestDto
+            {
+                Email=user.Email,
+                Password=dto.Password
+            };
+
+
+
+            var loginResult = await _authService.GetTokenAsync(TokenRequestDto);
+            if (!loginResult.IsAuthenticated)
+                return BadRequest(loginResult.Message);
+            if (!string.IsNullOrEmpty(loginResult.RefreshToken))
+                SetRefreshTokenInCookie(loginResult.RefreshToken, loginResult.RefreshTokenExpiration);
+            loginResult.Message = "You reset your password  and logged in successfully. ";
+            return Ok(loginResult);
+
          }
 
         [Authorize(AuthenticationSchemes = "Bearer")]

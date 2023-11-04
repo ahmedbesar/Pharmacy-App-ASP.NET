@@ -110,7 +110,6 @@ namespace Pharmacy.Services.Repositories
                 RefreshTokenExpiration = refreshToken.ExpiresOn
             };
         }
-
         public async Task<AuthDto> GetTokenAsync(TokenRequestDto model)
         {
             var AuthDto = new AuthDto();
@@ -150,7 +149,6 @@ namespace Pharmacy.Services.Repositories
 
             return AuthDto;
         }
-
         public async Task<string> AddRoleAsync(AddRoleDto model)
         {
             var user = await _userManager.FindByIdAsync(model.UserId);
@@ -165,7 +163,6 @@ namespace Pharmacy.Services.Repositories
 
             return result.Succeeded ? string.Empty : "Sonething went wrong";
         }
-
         private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
         {
             var userClaims = await _userManager.GetClaimsAsync(user);
@@ -197,7 +194,6 @@ namespace Pharmacy.Services.Repositories
 
             return jwtSecurityToken;
         }
-
         public async Task<AuthDto> RefreshTokenAsync(string token)
         {
             var AuthDto = new AuthDto();
@@ -236,7 +232,6 @@ namespace Pharmacy.Services.Repositories
 
             return AuthDto;
         }
-
         public async Task<bool> RevokeTokenAsync(string token)
         {
             var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));
@@ -281,7 +276,6 @@ namespace Pharmacy.Services.Repositories
 
             return true;
         }
-
         public async Task<ApplicationUser> GetCurrentUserById(string email)
         {
             var user = await _userManager.Users.SingleOrDefaultAsync(u => u.Email== email);
@@ -292,14 +286,12 @@ namespace Pharmacy.Services.Repositories
             var user = await _userManager.Users.SingleOrDefaultAsync(u => u.Email == email);
             return user;
         }
-
         public async Task<bool> UpdateUserVerificationCode( ApplicationUser user,string code)
         {
             user.VerificationCode =code;
             await _userManager.UpdateAsync(user);
             return true;
         }
-       
         public async Task<bool> resetPassword(ApplicationUser user, string password)
         {
             user.PasswordHash =  _userManager.PasswordHasher.HashPassword(user, password);
@@ -312,8 +304,6 @@ namespace Pharmacy.Services.Repositories
            
             return false;
         }
-
-
         private RefreshToken GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
