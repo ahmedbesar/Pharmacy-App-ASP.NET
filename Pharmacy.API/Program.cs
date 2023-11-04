@@ -15,6 +15,9 @@ using System.Text;
 using Pharmacy.Services.Settings;
 using Microsoft.Extensions.Configuration;
 using System.Data.Entity;
+using Pharmacy.Infrastructure.Data;
+using IUnitOfWork = Pharmacy.Domian.IUnitOfWork;
+using UnitOfWork = Pharmacy.Services.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +25,8 @@ builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddDbContext<StoreContext>(options =>
 builder.Services.AddScoped<IMailingService, MailingService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -49,7 +54,7 @@ builder.Services.AddAuthentication(options =>
         };
     });
 // Add services to the container.
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
 {
     var options = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"));
@@ -59,8 +64,26 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.Password.RequiredLength = 8;
     options.User.RequireUniqueEmail = true;
-}).AddEntityFrameworkStores<ApplicationDbContext>();
+}).AddEntityFrameworkStores<StoreContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+
+
+
+builder.Services.AddDbContext<StoreContext>(x =>
+ x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+//builder.Services.AddSingleton<IOrderService, OrderService>();
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
+{
+    var configuration = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"), true);
+    return ConnectionMultiplexer.Connect(configuration);
+
+});
 
 
 builder.Services.AddControllers();
@@ -71,6 +94,7 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 

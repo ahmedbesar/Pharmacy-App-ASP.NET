@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Pharmacy.Infrastructure.Data;
 using Pharmacy.Services;
 
 #nullable disable
 
 namespace Pharmacy.Services.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(StoreContext))]
     [Migration("20231019220717_AddTbProductAndTbProductType")]
     partial class AddTbProductAndTbProductType
     {

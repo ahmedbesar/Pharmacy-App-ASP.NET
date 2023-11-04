@@ -1,5 +1,6 @@
 ﻿using Pharmacy.Domian.Entities;
 using Pharmacy.Domian.Interfaces;
+using Pharmacy.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,9 @@ namespace Pharmacy.Services.Repositories
 {
     public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly StoreContext _context;
 
-        public ProductRepository(ApplicationDbContext context) : base(context)
+        public ProductRepository(StoreContext context) : base(context)
         {
            
         }
@@ -20,7 +21,12 @@ namespace Pharmacy.Services.Repositories
 
         public IEnumerable<Product> GetAlllllll111()
         {
-           return _context.Product.ToList();
+           return _context.products.ToList();
+        }
+
+        IEnumerable<Product> IProductRepository.GetAlllllll111()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -6,6 +6,7 @@ using Pharmacy.Domian.Entities;
 using Pharmacy.Domian.Interfaces;
 using Pharmacy.Infrastructure.Dtos;
 using System.Reflection.Metadata.Ecma335;
+using IUnitOfWork = Pharmacy.Domian.IUnitOfWork;
 
 namespace Pharmacy.API.Controllers
 {
