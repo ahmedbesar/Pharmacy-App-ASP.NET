@@ -6,7 +6,6 @@ namespace Pharmacy.Domian.Interfaces
     {
         Task<AuthDto> RegisterAsync(RegisterDto model);
         Task<AuthDto> GetTokenAsync(TokenRequestDto model);
-        Task<string> AddRoleAsync(AddRoleDto model);
         Task<AuthDto> RefreshTokenAsync(string token);
         Task<bool> RevokeTokenAsync(string token);
         Task<bool> UpdateUser(string token, UpdateUserDto dto);
