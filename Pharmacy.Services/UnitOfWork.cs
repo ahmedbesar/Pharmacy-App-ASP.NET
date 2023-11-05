@@ -15,14 +15,14 @@ namespace Pharmacy.Services
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly StoreContext _context;
+        private readonly ApplicationDbContext _context;
 
         public IBaseRepository<Product> Products { get; private set; }
         public IBaseRepository<ProductType> ProductTypes { get; private set; }
         public IBaseRepository<WishList> WishLists { get; private set; }
 
 
-        public UnitOfWork(StoreContext context)
+        public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
 

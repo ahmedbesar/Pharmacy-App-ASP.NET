@@ -16,9 +16,9 @@ namespace Pharmacy.Services.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
-        protected StoreContext _context;
+        protected ApplicationDbContext _context;
 
-        public BaseRepository(StoreContext context)
+        public BaseRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -67,31 +67,31 @@ namespace Pharmacy.Services.Repositories
 
         public List<Product> GetAllProductWithSameType(int id, int pgnum, int pgsize)
         {
-              var Products = _context.products.Include(a => a.ProductType)
+              var Products = _context.Product.Include(a => a.ProductType)
                 .Where(a => a.ProductTypeId== id).Skip(pgnum * pgsize - pgsize).Take(pgsize).ToList();
                 return Products;
            
         }
         public bool IsvalidProductType(int id)
         {
-            return _context.productTypes.Any(g => g.Id == id);
+            return _context.ProductType.Any(g => g.Id == id);
         }
         public bool IsvalidProduct(int id)
         {
-            return _context.products.Any(g => g.Id == id);
+            return _context.Product.Any(g => g.Id == id);
         }
         public List<Product> GetByProductNameOrProductTypeNameWithPagination(string? term, int pgnum, int pgsize)
         {
             if (term != null)
             {
-               var  result = _context.products.Include(a => a.ProductType)
+               var  result = _context.Product.Include(a => a.ProductType)
                 .Where(a => a.Name.Contains(term)
                 ||a.ProductType.Name.Contains(term)).Skip(pgnum * pgsize - pgsize).Take(pgsize).ToList();
                 return result;
             }
             else
             { 
-                var result = _context.products.Include(a => a.ProductType)
+                var result = _context.Product.Include(a => a.ProductType)
                .Skip(pgnum * pgsize - pgsize).Take(pgsize).ToList();
                 return result;
             }
@@ -99,7 +99,7 @@ namespace Pharmacy.Services.Repositories
         }
         public List<Product> GetProductsWithSameProductTypeAndSearchUsingNameAndPagination(int ProductTypeId, string term, int pgnum, int pgsize)
         {
-            var result = _context.products.Include(a => a.ProductType)
+            var result = _context.Product.Include(a => a.ProductType)
                 .Where(a => a.Name.Contains(term)
                 && a.ProductType.Id== ProductTypeId).Skip(pgnum * pgsize - pgsize).Take(pgsize).ToList();
             return result;
@@ -108,7 +108,7 @@ namespace Pharmacy.Services.Repositories
 
         public Product GetProductById(int id)
         {
-            return _context.products.Find(id);
+            return _context.Product.Find(id);
         }
 
         public List<Product> GetRecommendedProductsWithPagination(int id,int pgnum, int pgsize)
@@ -116,7 +116,7 @@ namespace Pharmacy.Services.Repositories
                 var _Product = GetProductById(id);
          
                 
-                var Recommended = _context.products.Include(a => a.ProductType).Where(a => a.ProductTypeId==_Product.ProductTypeId && a.price > _Product.price - 100
+                var Recommended = _context.Product.Include(a => a.ProductType).Where(a => a.ProductTypeId==_Product.ProductTypeId && a.price > _Product.price - 100
                 && a.price < _Product.price + 100).Skip(pgnum * pgsize - pgsize).Take(pgsize).OrderByDescending(a=>a.price).ToList();
                 return Recommended;
             
@@ -227,13 +227,13 @@ namespace Pharmacy.Services.Repositories
         {
             if (term != null)
             {
-                var result = _context.productTypes
+                var result = _context.ProductType
                  .Where(a => a.Name.Contains(term)).Skip((pgnum * pgsize) - pgsize).Take(pgsize).ToList();
                 return result;
             }
             else
             {
-                var result = _context.productTypes
+                var result = _context.ProductType
                .Skip((pgnum * pgsize - pgsize)).Take(pgsize).ToList();
                 return result;
             }

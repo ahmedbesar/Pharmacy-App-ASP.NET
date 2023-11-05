@@ -17,9 +17,9 @@ namespace Pharmacy.Services
         private readonly IGenericRepository<DeliveryMethod> _dmRepo;
         private readonly IBasketRepository _basketRepo;
         private readonly IGenericRepository<Product> _productRepo;
-        private readonly StoreContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public OrderService(StoreContext context)
+        public OrderService(ApplicationDbContext context)
         {
            _context = context;
         }

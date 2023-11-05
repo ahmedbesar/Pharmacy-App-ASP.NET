@@ -11,7 +11,7 @@ using Pharmacy.Services;
 
 namespace Pharmacy.Services.Migrations
 {
-    [DbContext(typeof(Infrastructure.Data.StoreContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20231021140245_AddTbWishList")]
     partial class AddTbWishList
     {

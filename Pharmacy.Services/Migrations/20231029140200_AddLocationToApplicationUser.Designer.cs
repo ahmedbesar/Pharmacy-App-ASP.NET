@@ -11,7 +11,7 @@ using Pharmacy.Services;
 
 namespace Pharmacy.Services.Migrations
 {
-    [DbContext(typeof(Infrastructure.Data.StoreContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20231029140200_AddLocationToApplicationUser")]
     partial class AddLocationToApplicationUser
     {

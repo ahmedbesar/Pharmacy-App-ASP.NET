@@ -11,9 +11,9 @@ namespace Pharmacy.Services.Repositories
 {
     public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
-        private readonly StoreContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public ProductRepository(StoreContext context) : base(context)
+        public ProductRepository(ApplicationDbContext context) : base(context)
         {
            
         }
@@ -21,7 +21,7 @@ namespace Pharmacy.Services.Repositories
 
         public IEnumerable<Product> GetAlllllll111()
         {
-           return _context.products.ToList();
+           return _context.Product.ToList();
         }
 
         IEnumerable<Product> IProductRepository.GetAlllllll111()

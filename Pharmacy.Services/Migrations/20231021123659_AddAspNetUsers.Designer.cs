@@ -12,7 +12,7 @@ using Pharmacy.Services;
 
 namespace Pharmacy.Services.Migrations
 {
-    [DbContext(typeof(StoreContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20231021123659_AddAspNetUsers")]
     partial class AddAspNetUsers
     {
